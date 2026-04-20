@@ -21,14 +21,16 @@ skills/ccg-paper/
 │   ├── verify-anonymization/        盲审匿名扫描
 │   ├── verify-format/               LaTeX / 页数 / 模板
 │   ├── verify-references/           引用完整性、断链、重复 key
+│   ├── verify-style/                英文技术写作风格（agent-style 21 规则）
 │   ├── gen-outline/                 生成目标会议的论文骨架
 │   └── lib/
-├── writing/                     20 个写作子技能（对标 Impeccable）
+├── writing/                     21 个写作子技能（对标 Impeccable）
 │   ├── tighten/    sharpen/    clarify/        hook/
 │   ├── motivate/   contribution/  narrate/     mathify/
 │   ├── figurize/   tablize/    cite/           anonymize/
 │   ├── translate/  harmonize/  abbreviate/     americanize/
 │   ├── venue-adapt/ page-fit/  section-balance/ headlinify/
+│   ├── style-polish/            agent-style 21 规则润色
 ├── orchestration/
 │   ├── multi-reviewer/              Chair/R1/R2/R3/Meta 角色系统
 │   └── SKILL.md
@@ -58,7 +60,7 @@ skills/ccg-paper/
 | 类别 | 说明 | 入口 |
 |------|------|------|
 | **核心工作流** | 研究→审查→计划→修改→润色→终审 | [核心工作流](#核心工作流) |
-| **Writing Subskills** | 20 个针对性写作改进命令 | [Writing Subskills](#writing-subskills) |
+| **Writing Subskills** | 21 个针对性写作改进命令 | [Writing Subskills](#writing-subskills) |
 | **Quality Gates** | 6 个强制质量关卡 | [Quality Gates](#quality-gates) |
 | **Multi-Reviewer** | Chair / R1 / R2 / R3 / Meta 编排 | [Multi-Reviewer](#multi-reviewer-orchestration) |
 | **Domain Packs** | 会议 / 写作 / LaTeX / Rebuttal / … | [Domain Packs](#domain-packs) |
@@ -70,6 +72,7 @@ skills/ccg-paper/
 ```
 ┌───────────────┐
 │  0. teach     │  → 告知 skill 当前论文目标会议/阶段/重点
+│               │     检查并启用 agent-style
 └───────┬───────┘
         ▼
 ┌───────────────┐  ┌───────────────┐
@@ -80,27 +83,32 @@ skills/ccg-paper/
                   ▼
          ┌───────────────┐
          │  2. review    │  多 reviewer 并行
-         │  R1 / R2 / R3 │
+         │  R1 / R2 / R3 │  R3 应用 agent-style 规则
          └───────┬───────┘
                  ▼
          ┌───────────────┐
          │  3. meta      │  Chair 综合 → Meta-Review
+         │               │  包含 style scorecard
          └───────┬───────┘
                  ▼
          ┌───────────────┐
          │  4. plan      │  P0/P1/P2/P3 修改路线图
+         │               │  包含 style violations 修复
          └───────┬───────┘
                  ▼
          ┌───────────────┐
          │  5. revise    │  Codex 执行修改
+         │               │  遵循 agent-style 规则
          └───────┬───────┘
                  ▼
          ┌───────────────┐
          │  6. polish    │  writing subskills 组合应用
+         │               │  + style-polish (agent-style)
          └───────┬───────┘
                  ▼
          ┌───────────────┐
          │  7. verify-*  │  质量关卡（强制）
+         │               │  + verify-style
          └───────┬───────┘
                  ▼
          ┌───────────────┐
@@ -152,6 +160,7 @@ skills/ccg-paper/
 | `/ccg-paper:page-fit` | 压到限定页数 / 字数 | 超页 |
 | `/ccg-paper:section-balance` | 调整各章节篇幅比例 | "Intro 过长" |
 | `/ccg-paper:headlinify` | Section/subsection 标题精炼 | "标题长" |
+| `/ccg-paper:style-polish` | agent-style 21 规则润色 | "AI 味太重" / "润色" |
 
 每个 subskill 单独有 `writing/<name>/SKILL.md` 描述操作步骤与原则。
 
@@ -169,6 +178,7 @@ skills/ccg-paper/
 | `/ccg-paper:verify-anonymization` | 自引 / URL / Acknowledgment / 元数据 | 盲审会议必跑 |
 | `/ccg-paper:verify-format` | LaTeX 编译 / 页数 / 模板合规 | submit 前必跑 |
 | `/ccg-paper:verify-references` | Ref 完整性、断链、重复 key、年份 | polish 后 |
+| `/ccg-paper:verify-style` | 英文技术写作风格（agent-style 21 规则） | polish 后 / submit 前 |
 
 ### 运行方式
 
@@ -258,11 +268,11 @@ node .../run_skill.js verify-references paper.tex refs.bib
 ### 工作流骨架
 `teach / research / outline / review / meta / plan / revise / polish / submit / status / rollback / diff`
 
-### Writing Subskills（20）
-`tighten / sharpen / clarify / hook / motivate / contribution / narrate / mathify / figurize / tablize / cite / anonymize / translate / harmonize / abbreviate / americanize / venue-adapt / page-fit / section-balance / headlinify`
+### Writing Subskills（21）
+`tighten / sharpen / clarify / hook / motivate / contribution / narrate / mathify / figurize / tablize / cite / anonymize / translate / harmonize / abbreviate / americanize / venue-adapt / page-fit / section-balance / headlinify / style-polish`
 
-### Quality Gates（7）
-`verify-novelty / verify-claims / verify-reproducibility / verify-anonymization / verify-format / verify-references / gen-outline`
+### Quality Gates（8）
+`verify-novelty / verify-claims / verify-reproducibility / verify-anonymization / verify-format / verify-references / verify-style / gen-outline`
 
 ### 高级场景
 `rebuttal / camera-ready / extend-journal / split-workshop / merge-papers`
