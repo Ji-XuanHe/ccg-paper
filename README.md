@@ -560,6 +560,9 @@ MIT License · 详见 `LICENSE`。
 - 架构参考 [ccg](https://github.com/) 的 tools + writing + orchestration + domains 四层系统
 - Writing subskills 设计参考 Impeccable
 - Multi-Reviewer 角色模型参考 NeurIPS / ICML 审稿流程
+- 英文技术写作规则集成 [agent-style](https://github.com/yzhao062/agent-style) v0.2.0 (CC BY 4.0 + MIT)
+  - 21 条规则：12 条经典规则（Strunk & White, Orwell, Pinker, Gopen & Swan）+ 9 条现场观察规则（LLM 输出模式 2022-2026）
+  - 用于 verify-style 质量关卡和 style-polish 写作子命令
 
 ---
 
