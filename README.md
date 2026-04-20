@@ -563,5 +563,5 @@ MIT License · 详见 `LICENSE`。
 
 ---
 
-**作者**：[@xuanNULL](https://github.com/xuanNULL)
-**仓库**：<https://github.com/xuanNULL/ccg-paper>
+**作者**：[@Ji-XuanHe](https://github.com/Ji-XuanHe)
+**仓库**：<https://github.com/Ji-XuanHe/ccg-paper>
