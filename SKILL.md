@@ -263,6 +263,27 @@ node .../run_skill.js verify-references paper.tex refs.bib
 
 ---
 
+## 失败模式与恢复
+
+各阶段的失败分支与兜底路径。**遇到下表场景必须按"一线修复→仍失败兜底"执行，不得静默跳过。**
+
+| 阶段 | 🔴 触发条件 | 一线修复 | 仍失败兜底 |
+|------|-----------|---------|-----------|
+| teach | `ccg-paper-plan.md` 已存在 | 读取并展示现有上下文，问用户"复用/覆盖" | 用户不决断 → 默认复用，追加新会话到文末 |
+| research | Gemini 调用超时/无返回 | 重试 1 次；仍超时则缩小 query 范围再试 | 标注 `research=skipped`，转用 Claude 本地知识 + 提示用户手动补文献 |
+| review | Codex reviewer `SESSION_ID` 丢失 | 用 `:status` 读回 plan 里保存的 `CODEX_R*_SESSION` | 仍无 → 该 reviewer 重新起 session 从头跑，其余 reviewer 结果保留 |
+| review | `TaskOutput` 超时（>600s） | 轮询等待，**🔴 禁止 Kill**（半成品比无结果有用） | 超 3 轮轮询无果 → 标注该路 `timeout`，用已返回的 reviewer 继续 meta |
+| review | 3 reviewer 意见冲突 | 按仲裁链：Gemini 文献 > Chair 结构 > Reviewer 单方 | 无法判定 → meta 中显式列 `Disagreement`，交用户裁决 |
+| revise | Codex 改动偏离 plan 条目 | 回退该条 diff，重发 plan 条目要求严格对齐 | 连续 2 次跑偏 → 该条降级为人工修改，记入 plan |
+| verify-* | `run_skill.js` 报错/非零退出 | 检查文件路径与参数；缺 `refs.bib` 等依赖则补齐 | 脚本本身 bug → 该关卡降级为 Codex 人工核查，标注 `script_fail` |
+| verify-format | LaTeX 编译失败 | 读 `.log` 定位首个 error，修复后重编 | 缺包/环境问题 → 报告 missing package，**🔴 阻止 submit** |
+| submit | 🔴 Critical 未清零 | 列出未清 Critical 项，回到对应 verify 关卡 | **🛑 STOP：Critical 未清零绝不放行投稿** |
+| 通用 | git 工作树脏/revise 冲突 | `git stash` 后重试 | 仍冲突 → 从上一 commit 读出文件覆盖，告知用户手动确认 |
+
+> 原则：异常先告知用户再按上表处理；任一兜底动作都要写进 `ccg-paper-plan.md` 的对应小节，保证可追溯。
+
+---
+
 ## 命令目录（60+）
 
 ### 工作流骨架
