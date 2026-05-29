@@ -314,3 +314,21 @@ node .../run_skill.js verify-references paper.tex refs.bib
 6. **verify 强制**：submit 前必须过完所有 verify-*，🔴 Critical 未清零不得投稿
 7. **引用必回验**：改术语/公式后用 Grep 扫全仓
 8. **冲突仲裁**：Gemini 文献 > Chair 结构 > Reviewer 单方意见
+
+---
+
+## 反模式黑名单（不要做什么）
+
+每次编排前对照本表。任一命中 → 停下重排，**不要硬跑**。
+
+| # | 🚫 反模式 | 为什么不要 | 替代做法 |
+|---|----------|-----------|---------|
+| 1 | 跳过 teach 直接 review | reviewer 不知目标会议/阶段/重点，审稿偏离 venue 偏好 | 新论文必先 `:teach` 落盘上下文 |
+| 2 | 串行跑 3 个 reviewer | 浪费 2/3 时间，违背并行设计 | `run_in_background: true` 三路并行 + Gemini 独立一路 |
+| 3 | Kill 超时的 Codex task | 半成品审稿意见仍有价值，Kill = 全丢 | 轮询等待，超时标 `timeout` 用已返回结果继续 |
+| 4 | 一次叠加多个 writing subskill | 多变量同改，质量升降无法归因 | 一次只应用一个 subskill，看效果再叠下一个 |
+| 5 | Critical 未清零就 submit | 🔴 直接拒稿/桌拒风险 | 🛑 所有 verify-* 的 Critical 清零才放行 |
+| 6 | Claude 凭训练数据臆造文献/SOTA | 引用错误、年份过时、概念溯源失实 | 走 Gemini `:research` 或先 Read `domains/literature` |
+| 7 | 改术语/公式后不全仓回验 | 符号/术语不一致，审稿人扣分 | 改后 Grep 扫全仓，跑 `:harmonize` + `verify-style` |
+| 8 | 盲审会议忘跑 verify-anonymization | 自引/致谢/元数据泄露身份 → 违规退稿 | 盲审会议 submit 前**必跑**该关卡 |
+| 9 | 为凑页数注水正文 | 审稿人反感冗余，page-fit 不是加内容 | `:tighten`/`:page-fit` 是压缩，超页删冗余而非填充 |
