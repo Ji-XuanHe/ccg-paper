@@ -132,6 +132,19 @@ skills/ccg-paper/
 | 8 | `/ccg-paper:submit` | Claude |
 | — | `/ccg-paper:status` / `:rollback` / `:diff` | Claude |
 
+### 🔴 强制检查点
+
+以下阶段转换**必须暂停等用户确认**，不得自主连跑——防止编排失控改坏论文：
+
+| 检查点 | 时机 | 确认内容 | 未确认的后果 |
+|--------|------|---------|------------|
+| 🔴 CP-1 | teach 后 → research/review 前 | 目标会议/阶段/重点是否正确 | venue 错 → 全程审稿偏离 |
+| 🔴 CP-2 | meta 后 → plan 前 | Meta-Review 的 P0/P1 判定是否认可 | 误判优先级 → 改错重点 |
+| 🛑 CP-3 | plan 后 → revise 前 | **路线图逐条确认，Codex 改论文前必停** | 自动改写跑偏正文 |
+| 🔴 CP-4 | revise/polish 后 → submit 前 | diff 是否符合预期、verify 是否全过 | Critical 漏网 → 拒稿 |
+
+> 规则：检查点靠 🔴/🛑 视觉标记识别，**仅"建议确认"措辞不构成检查点**。用户说"继续"才推进；说"不对"则 `:rollback` 回退该阶段。
+
 ---
 
 ## Writing Subskills
