@@ -196,7 +196,7 @@ skills/ccg-paper/
 ### 运行方式
 
 ```bash
-node /Users/ji-xuanhe/.claude/skills/ccg-paper/tools/run_skill.js <tool> [args]
+node "$HOME/.claude/skills/ccg-paper/tools/run_skill.js" <tool> [args]
 
 # 示例
 node .../run_skill.js verify-anonymization paper.tex
