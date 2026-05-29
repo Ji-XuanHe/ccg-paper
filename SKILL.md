@@ -132,6 +132,19 @@ skills/ccg-paper/
 | 8 | `/ccg-paper:submit` | Claude |
 | — | `/ccg-paper:status` / `:rollback` / `:diff` | Claude |
 
+### 🔴 强制检查点
+
+以下阶段转换**必须暂停等用户确认**，不得自主连跑——防止编排失控改坏论文：
+
+| 检查点 | 时机 | 确认内容 | 未确认的后果 |
+|--------|------|---------|------------|
+| 🔴 CP-1 | teach 后 → research/review 前 | 目标会议/阶段/重点是否正确 | venue 错 → 全程审稿偏离 |
+| 🔴 CP-2 | meta 后 → plan 前 | Meta-Review 的 P0/P1 判定是否认可 | 误判优先级 → 改错重点 |
+| 🛑 CP-3 | plan 后 → revise 前 | **路线图逐条确认，Codex 改论文前必停** | 自动改写跑偏正文 |
+| 🔴 CP-4 | revise/polish 后 → submit 前 | diff 是否符合预期、verify 是否全过 | Critical 漏网 → 拒稿 |
+
+> 规则：检查点靠 🔴/🛑 视觉标记识别，**仅"建议确认"措辞不构成检查点**。用户说"继续"才推进；说"不对"则 `:rollback` 回退该阶段。
+
 ---
 
 ## Writing Subskills
@@ -263,6 +276,27 @@ node .../run_skill.js verify-references paper.tex refs.bib
 
 ---
 
+## 失败模式与恢复
+
+各阶段的失败分支与兜底路径。**遇到下表场景必须按"一线修复→仍失败兜底"执行，不得静默跳过。**
+
+| 阶段 | 🔴 触发条件 | 一线修复 | 仍失败兜底 |
+|------|-----------|---------|-----------|
+| teach | `ccg-paper-plan.md` 已存在 | 读取并展示现有上下文，问用户"复用/覆盖" | 用户不决断 → 默认复用，追加新会话到文末 |
+| research | Gemini 调用超时/无返回 | 重试 1 次；仍超时则缩小 query 范围再试 | 标注 `research=skipped`，转用 Claude 本地知识 + 提示用户手动补文献 |
+| review | Codex reviewer `SESSION_ID` 丢失 | 用 `:status` 读回 plan 里保存的 `CODEX_R*_SESSION` | 仍无 → 该 reviewer 重新起 session 从头跑，其余 reviewer 结果保留 |
+| review | `TaskOutput` 超时（>600s） | 轮询等待，**🔴 禁止 Kill**（半成品比无结果有用） | 超 3 轮轮询无果 → 标注该路 `timeout`，用已返回的 reviewer 继续 meta |
+| review | 3 reviewer 意见冲突 | 按仲裁链：Gemini 文献 > Chair 结构 > Reviewer 单方 | 无法判定 → meta 中显式列 `Disagreement`，交用户裁决 |
+| revise | Codex 改动偏离 plan 条目 | 回退该条 diff，重发 plan 条目要求严格对齐 | 连续 2 次跑偏 → 该条降级为人工修改，记入 plan |
+| verify-* | `run_skill.js` 报错/非零退出 | 检查文件路径与参数；缺 `refs.bib` 等依赖则补齐 | 脚本本身 bug → 该关卡降级为 Codex 人工核查，标注 `script_fail` |
+| verify-format | LaTeX 编译失败 | 读 `.log` 定位首个 error，修复后重编 | 缺包/环境问题 → 报告 missing package，**🔴 阻止 submit** |
+| submit | 🔴 Critical 未清零 | 列出未清 Critical 项，回到对应 verify 关卡 | **🛑 STOP：Critical 未清零绝不放行投稿** |
+| 通用 | git 工作树脏/revise 冲突 | `git stash` 后重试 | 仍冲突 → 从上一 commit 读出文件覆盖，告知用户手动确认 |
+
+> 原则：异常先告知用户再按上表处理；任一兜底动作都要写进 `ccg-paper-plan.md` 的对应小节，保证可追溯。
+
+---
+
 ## 命令目录（60+）
 
 ### 工作流骨架
@@ -293,3 +327,21 @@ node .../run_skill.js verify-references paper.tex refs.bib
 6. **verify 强制**：submit 前必须过完所有 verify-*，🔴 Critical 未清零不得投稿
 7. **引用必回验**：改术语/公式后用 Grep 扫全仓
 8. **冲突仲裁**：Gemini 文献 > Chair 结构 > Reviewer 单方意见
+
+---
+
+## 反模式黑名单（不要做什么）
+
+每次编排前对照本表。任一命中 → 停下重排，**不要硬跑**。
+
+| # | 🚫 反模式 | 为什么不要 | 替代做法 |
+|---|----------|-----------|---------|
+| 1 | 跳过 teach 直接 review | reviewer 不知目标会议/阶段/重点，审稿偏离 venue 偏好 | 新论文必先 `:teach` 落盘上下文 |
+| 2 | 串行跑 3 个 reviewer | 浪费 2/3 时间，违背并行设计 | `run_in_background: true` 三路并行 + Gemini 独立一路 |
+| 3 | Kill 超时的 Codex task | 半成品审稿意见仍有价值，Kill = 全丢 | 轮询等待，超时标 `timeout` 用已返回结果继续 |
+| 4 | 一次叠加多个 writing subskill | 多变量同改，质量升降无法归因 | 一次只应用一个 subskill，看效果再叠下一个 |
+| 5 | Critical 未清零就 submit | 🔴 直接拒稿/桌拒风险 | 🛑 所有 verify-* 的 Critical 清零才放行 |
+| 6 | Claude 凭训练数据臆造文献/SOTA | 引用错误、年份过时、概念溯源失实 | 走 Gemini `:research` 或先 Read `domains/literature` |
+| 7 | 改术语/公式后不全仓回验 | 符号/术语不一致，审稿人扣分 | 改后 Grep 扫全仓，跑 `:harmonize` + `verify-style` |
+| 8 | 盲审会议忘跑 verify-anonymization | 自引/致谢/元数据泄露身份 → 违规退稿 | 盲审会议 submit 前**必跑**该关卡 |
+| 9 | 为凑页数注水正文 | 审稿人反感冗余，page-fit 不是加内容 | `:tighten`/`:page-fit` 是压缩，超页删冗余而非填充 |
