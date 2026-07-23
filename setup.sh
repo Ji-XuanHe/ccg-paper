@@ -3,7 +3,7 @@
 # CCG-Paper 一键安装脚本
 #
 # 用法:
-#   curl -fsSL https://raw.githubusercontent.com/xuanNULL/ccg-paper/main/setup.sh | bash
+#   curl -fsSL https://raw.githubusercontent.com/Ji-XuanHe/ccg-paper/main/setup.sh | bash
 #   # 或下载后本地运行:
 #   bash setup.sh
 #
@@ -232,7 +232,7 @@ fi
 
 if [ ! -d "$SKILL_DIR/.git" ]; then
   mkdir -p "$(dirname "$SKILL_DIR")"
-  git clone git@github.com:xuanNULL/ccg-paper.git "$SKILL_DIR"
+  git clone git@github.com:Ji-XuanHe/ccg-paper.git "$SKILL_DIR"
   ok "克隆完成"
 fi
 

@@ -61,7 +61,7 @@ skills/ccg-paper/
 |------|------|------|
 | **核心工作流** | 研究→审查→计划→修改→润色→终审 | [核心工作流](#核心工作流) |
 | **Writing Subskills** | 21 个针对性写作改进命令 | [Writing Subskills](#writing-subskills) |
-| **Quality Gates** | 6 个强制质量关卡 | [Quality Gates](#quality-gates) |
+| **Quality Gates** | 7 个强制质量关卡 | [Quality Gates](#quality-gates) |
 | **Multi-Reviewer** | Chair / R1 / R2 / R3 / Meta 编排 | [Multi-Reviewer](#multi-reviewer-orchestration) |
 | **Domain Packs** | 会议 / 写作 / LaTeX / Rebuttal / … | [Domain Packs](#domain-packs) |
 
@@ -305,8 +305,11 @@ node .../run_skill.js verify-references paper.tex refs.bib
 ### Writing Subskills（21）
 `tighten / sharpen / clarify / hook / motivate / contribution / narrate / mathify / figurize / tablize / cite / anonymize / translate / harmonize / abbreviate / americanize / venue-adapt / page-fit / section-balance / headlinify / style-polish`
 
-### Quality Gates（8）
-`verify-novelty / verify-claims / verify-reproducibility / verify-anonymization / verify-format / verify-references / verify-style / gen-outline`
+### Quality Gates（7）
+`verify-novelty / verify-claims / verify-reproducibility / verify-anonymization / verify-format / verify-references / verify-style`
+
+### 骨架生成器
+`gen-outline`（生成目标会议骨架，非关卡）
 
 ### 高级场景
 `rebuttal / camera-ready / extend-journal / split-workshop / merge-papers`

@@ -235,14 +235,14 @@ biber --version
 
 ```bash
 # 克隆到 Claude Code Skills 目录
-git clone git@github.com:xuanNULL/ccg-paper.git ~/.claude/skills/ccg-paper
+git clone git@github.com:Ji-XuanHe/ccg-paper.git ~/.claude/skills/ccg-paper
 ```
 
 ### 方式二：如果你只想用，不想 git 管理
 
 ```bash
 # 下载 ZIP
-curl -L https://github.com/xuanNULL/ccg-paper/archive/refs/heads/main.zip -o ccg-paper.zip
+curl -L https://github.com/Ji-XuanHe/ccg-paper/archive/refs/heads/main.zip -o ccg-paper.zip
 unzip ccg-paper.zip
 mv ccg-paper-main ~/.claude/skills/ccg-paper
 rm ccg-paper.zip
@@ -252,7 +252,7 @@ rm ccg-paper.zip
 
 ```bash
 # 在任意目录运行：
-curl -fsSL https://raw.githubusercontent.com/xuanNULL/ccg-paper/main/setup.sh | bash
+curl -fsSL https://raw.githubusercontent.com/Ji-XuanHe/ccg-paper/main/setup.sh | bash
 ```
 
 ### 验证克隆成功
@@ -451,7 +451,7 @@ cat ~/.ssh/id_rsa.pub | pbcopy
 # 然后访问 https://github.com/settings/keys 添加
 
 # 再试
-git clone git@github.com:xuanNULL/ccg-paper.git ~/.claude/skills/ccg-paper
+git clone git@github.com:Ji-XuanHe/ccg-paper.git ~/.claude/skills/ccg-paper
 ```
 
 ### Q6: Gemini API 认证失败
@@ -518,4 +518,4 @@ bash ~/.claude/skills/ccg-paper/check_deps.sh
 3. `/ccg-paper:research <topic>` — 文献调研
 4. `/ccg-paper:review` — 三模型审稿
 
-有问题？[提 Issue](https://github.com/xuanNULL/ccg-paper/issues)
+有问题？[提 Issue](https://github.com/Ji-XuanHe/ccg-paper/issues)
